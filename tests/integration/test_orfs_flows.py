@@ -275,7 +275,7 @@ class TestReportImages:
         # This test assumes a prior flow run has produced images
         result = await list_report_images()
         # May return empty list if no flow has been run, which is OK
-        assert isinstance(result, (list, dict, str))
+        assert isinstance(result, list | dict | str)
 
     @pytest.mark.asyncio
     async def test_read_report_image_not_found(self):
