@@ -10,7 +10,6 @@ Tests use the 'gcd' design (Greatest Common Divisor) which is small and ships
 with ORFS, keeping test times reasonable (~2-5 minutes per flow).
 """
 
-import asyncio
 import os
 import time
 
@@ -141,7 +140,7 @@ class TestCommandExecution:
         try:
             # This should timeout — 'after' sleeps in Tcl
             await _execute_command(manager, session_id, "after 30000", timeout=3)
-        except (TimeoutError, asyncio.TimeoutError, Exception):
+        except (TimeoutError, Exception):
             elapsed = time.time() - start
             assert elapsed < 10, f"Timeout took too long: {elapsed:.1f}s"
 
