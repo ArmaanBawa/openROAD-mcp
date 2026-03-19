@@ -47,7 +47,8 @@ ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
-# Copy the pre-built virtual environment and source from builder
+# Copy the uv-managed Python toolchain (if any) and the virtual environment
+COPY --from=builder /root/.local/share/uv/python /root/.local/share/uv/python
 COPY --from=builder /build/.venv /app/.venv
 COPY --from=builder /build/src /app/src
 COPY pyproject.toml uv.lock ./
