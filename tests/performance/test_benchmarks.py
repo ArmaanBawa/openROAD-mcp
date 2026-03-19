@@ -9,8 +9,6 @@ Measures key performance metrics:
 Results are output as JSON for historical tracking.
 Run via: make test-performance (Docker) or pytest tests/performance/
 """
-
-import asyncio
 import json
 import os
 import statistics

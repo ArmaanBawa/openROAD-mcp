@@ -14,7 +14,6 @@ Run via: make test-performance (Docker) or pytest tests/performance/
 import asyncio
 import gc
 import os
-import time
 import tracemalloc
 
 import psutil

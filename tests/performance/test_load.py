@@ -155,7 +155,8 @@ class TestConcurrentSessions:
         print(f"   Children: {metrics_before['children']} → {metrics_after['children']}")
 
         if failures:
-            print(f"   Failure reasons: {set(r['status'] for r in failures)}")
+            reasons = {r['status'] for r in failures}
+            print(f"   Failure reasons: {reasons}")
 
         # Cleanup
         for r in successes:
