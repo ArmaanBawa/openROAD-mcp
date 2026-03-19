@@ -126,12 +126,21 @@ jobs:
       - name: Run tests in WSL2
         shell: powershell
         run: |
-          wsl -d Ubuntu-24.04 -- bash -lc "export PATH=`$HOME/.local/bin:`$PATH && cd /mnt/d/a/openROAD-mcp/openROAD-mcp && uv sync --all-extras --inexact && uv run pytest --ignore=tests/interactive --ignore=tests/performance --ignore=tests/integration -v"
+          $script = @'
+          #!/bin/bash
+          export HOME=/root
+          export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+          cd /mnt/d/a/openROAD-mcp/openROAD-mcp
+          uv sync --all-extras --inexact
+          uv run pytest --ignore=tests/interactive --ignore=tests/performance --ignore=tests/integration -v
+          '@
+          $script | Out-File -Encoding ascii -FilePath run_tests.sh
+          wsl -d Ubuntu-24.04 -- bash /mnt/d/a/openROAD-mcp/openROAD-mcp/run_tests.sh
 
       - name: Check Docker availability in WSL2
         shell: powershell
         run: |
-          wsl -d Ubuntu-24.04 -- bash -lc "command -v docker && docker --version || echo 'Docker not available in WSL2 (requires Docker Desktop)'"
+          wsl -d Ubuntu-24.04 -- bash -c "command -v docker && docker --version || echo 'Docker not available in WSL2 (requires Docker Desktop)'"
 
   # ---------------------------------------------------------------------------
   # Summary job — gates merge
