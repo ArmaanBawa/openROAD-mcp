@@ -30,9 +30,8 @@ A Model Context Protocol (MCP) server that provides tools for interacting with O
 
 | MCP Client | Supported | Transport Mode(s) | Notes |
 |------------|--------|------------------|-------|
-| Claude Code | ✅ | STDIO | Full support for all features |
 | Gemini CLI | ✅ | STDIO | Full support for all features |
-| Other MCP clients | ⚠️ | STDIO | Should work with standard STDIO transport |
+| Other MCP clients | ❓ | STDIO | Should work with standard STDIO transport |
 
 ## Getting Started
 
@@ -78,17 +77,6 @@ For local development, use:
 ## Installation
 
 <details>
-<summary><b>Claude Code</b></summary>
-
-Use the Claude Code CLI to add the OpenROAD MCP server:
-
-```bash
-claude mcp add --transport stdio openroad-mcp -- uvx --from git+https://github.com/luarss/openroad-mcp openroad-mcp
-```
-
-</details>
-
-<details>
 <summary><b>Gemini CLI</b></summary>
 
 Follow the [Gemini MCP install guide](https://ai.google.dev/gemini-api/docs/model-context-protocol), using the [standard configuration](#standard-configuration) above.
@@ -98,7 +86,12 @@ Follow the [Gemini MCP install guide](https://ai.google.dev/gemini-api/docs/mode
 <details>
 <summary><b>Docker</b></summary>
 
-🚧 **Work in Progress**: Docker deployment via GitHub Container Registry (GHCR) is coming soon.
+The MCP server is published as a Docker image on GHCR. You can run it directly:
+
+```bash
+docker pull ghcr.io/armaanbawa/openroad-mcp:latest
+docker run -it --rm ghcr.io/armaanbawa/openroad-mcp:latest
+```
 
 </details>
 
