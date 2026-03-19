@@ -24,8 +24,8 @@ WORKDIR /build
 COPY pyproject.toml uv.lock README.md ./
 COPY requirements.txt requirements-test.txt ./
 
-# Install production dependencies only (no dev extras)
-RUN uv sync --inexact --no-dev
+# Install production dependencies only (no dev extras, don't install the project yet)
+RUN uv sync --inexact --no-dev --no-install-project
 
 # Now copy the full source tree
 COPY src/ src/
