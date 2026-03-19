@@ -9,6 +9,7 @@ Measures key performance metrics:
 Results are output as JSON for historical tracking.
 Run via: make test-performance (Docker) or pytest tests/performance/
 """
+
 import json
 import os
 import statistics
@@ -51,6 +52,7 @@ def _save_benchmark_results(name: str, results: dict) -> None:
 # Benchmark: Session creation
 # ---------------------------------------------------------------------------
 
+
 class TestSessionCreationBenchmark:
     """Benchmark session creation time."""
 
@@ -91,8 +93,7 @@ class TestSessionCreationBenchmark:
 
         _save_benchmark_results("session_creation", results)
 
-        print(f"\n📊 Session creation: p50={results['p50']:.3f}s, "
-              f"p95={results['p95']:.3f}s, p99={results['p99']:.3f}s")
+        print(f"\n📊 Session creation: p50={results['p50']:.3f}s, p95={results['p95']:.3f}s, p99={results['p99']:.3f}s")
 
         # Assertion: session creation should be under 5 seconds
         assert results["p95"] < 5.0, f"Session creation p95 too slow: {results['p95']:.3f}s"
@@ -101,6 +102,7 @@ class TestSessionCreationBenchmark:
 # ---------------------------------------------------------------------------
 # Benchmark: Command execution latency
 # ---------------------------------------------------------------------------
+
 
 class TestCommandLatencyBenchmark:
     """Benchmark command execution latency."""
@@ -144,8 +146,9 @@ class TestCommandLatencyBenchmark:
 
         _save_benchmark_results("command_latency", results)
 
-        print(f"\n📊 Command latency: p50={results['p50']:.3f}s, "
-              f"throughput={results['throughput_per_second']:.1f} cmd/s")
+        print(
+            f"\n📊 Command latency: p50={results['p50']:.3f}s, throughput={results['throughput_per_second']:.1f} cmd/s"
+        )
 
         # Assertion: simple commands should complete under 2 seconds
         assert results["p95"] < 2.0, f"Command latency p95 too slow: {results['p95']:.3f}s"
@@ -154,6 +157,7 @@ class TestCommandLatencyBenchmark:
 # ---------------------------------------------------------------------------
 # Benchmark: Throughput
 # ---------------------------------------------------------------------------
+
 
 class TestThroughputBenchmark:
     """Benchmark sustained throughput."""

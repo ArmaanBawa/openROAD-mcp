@@ -26,6 +26,7 @@ pytestmark = pytest.mark.skipif(
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _openroad_available() -> bool:
     """Check if OpenROAD binary is accessible."""
     return os.system("which openroad > /dev/null 2>&1") == 0
@@ -45,6 +46,7 @@ def _get_orfs_path() -> str:
 # Session management helpers
 # ---------------------------------------------------------------------------
 
+
 async def _create_session():
     """Create an MCP session and return the session manager + session ID."""
     from openroad_mcp.session.manager import SessionManager
@@ -63,6 +65,7 @@ async def _execute_command(manager, session_id: str, command: str, timeout: int 
 # ---------------------------------------------------------------------------
 # Tests: Session lifecycle
 # ---------------------------------------------------------------------------
+
 
 class TestSessionLifecycle:
     """Test basic session creation and management."""
@@ -108,6 +111,7 @@ class TestSessionLifecycle:
 # Tests: OpenROAD command execution
 # ---------------------------------------------------------------------------
 
+
 class TestCommandExecution:
     """Test running OpenROAD commands through MCP sessions."""
 
@@ -150,6 +154,7 @@ class TestCommandExecution:
 # ---------------------------------------------------------------------------
 # Tests: Real ORFS flow stages (requires ORFS Docker image)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.skipif(
     not _orfs_available(),
@@ -218,6 +223,7 @@ class TestORFSFlows:
 # Tests: Error handling
 # ---------------------------------------------------------------------------
 
+
 class TestErrorHandling:
     """Test that errors are handled gracefully."""
 
@@ -226,9 +232,7 @@ class TestErrorHandling:
         """Sending an invalid Tcl command should not crash the session."""
         manager, session_id = await _create_session()
 
-        await _execute_command(
-            manager, session_id, "this_is_not_a_valid_command_12345"
-        )
+        await _execute_command(manager, session_id, "this_is_not_a_valid_command_12345")
         # Session should still be alive after error
         sessions = await manager.list_sessions()
         active_ids = [s.get("session_id", s.get("id")) for s in sessions]
@@ -251,6 +255,7 @@ class TestErrorHandling:
 # ---------------------------------------------------------------------------
 # Tests: Report image tools
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.skipif(
     not _orfs_available(),

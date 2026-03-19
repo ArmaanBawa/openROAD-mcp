@@ -68,6 +68,7 @@ async def _create_and_run_session(manager, session_idx: int, commands: int = 3):
 # Load tests
 # ---------------------------------------------------------------------------
 
+
 class TestConcurrentSessions:
     """Test the system under concurrent session load."""
 
@@ -136,10 +137,7 @@ class TestConcurrentSessions:
         results = []
         batch_size = 10
         for batch_start in range(0, 50, batch_size):
-            batch = [
-                _create_and_run_session(manager, i)
-                for i in range(batch_start, min(batch_start + batch_size, 50))
-            ]
+            batch = [_create_and_run_session(manager, i) for i in range(batch_start, min(batch_start + batch_size, 50))]
             batch_results = await asyncio.gather(*batch)
             results.extend(batch_results)
             await asyncio.sleep(0.5)  # Brief pause between batches
@@ -155,7 +153,7 @@ class TestConcurrentSessions:
         print(f"   Children: {metrics_before['children']} → {metrics_after['children']}")
 
         if failures:
-            reasons = {r['status'] for r in failures}
+            reasons = {r["status"] for r in failures}
             print(f"   Failure reasons: {reasons}")
 
         # Cleanup

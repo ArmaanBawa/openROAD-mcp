@@ -53,6 +53,7 @@ def _get_zombie_processes() -> list:
 # Memory leak detection: session create/destroy cycle
 # ---------------------------------------------------------------------------
 
+
 class TestMemoryLeaks:
     """Detect memory leaks through repeated session lifecycle operations."""
 
@@ -83,8 +84,10 @@ class TestMemoryLeaks:
             if i % 10 == 0:
                 gc.collect()
                 current_mb = _get_memory_mb()
-                print(f"  Iteration {i}/{LEAK_TEST_ITERATIONS}: {current_mb:.1f}MB "
-                      f"(delta: {current_mb - baseline_mb:+.1f}MB)")
+                print(
+                    f"  Iteration {i}/{LEAK_TEST_ITERATIONS}: {current_mb:.1f}MB "
+                    f"(delta: {current_mb - baseline_mb:+.1f}MB)"
+                )
 
         # Final cleanup
         gc.collect()
@@ -126,9 +129,7 @@ class TestMemoryLeaks:
 
         num_commands = 200
         for i in range(num_commands):
-            await manager.execute_command(
-                sid, f"puts long_session_cmd_{i}", timeout=10
-            )
+            await manager.execute_command(sid, f"puts long_session_cmd_{i}", timeout=10)
 
         gc.collect()
         final_mb = _get_memory_mb()
@@ -151,6 +152,7 @@ class TestMemoryLeaks:
 # ---------------------------------------------------------------------------
 # Zombie process and cleanup detection
 # ---------------------------------------------------------------------------
+
 
 class TestProcessCleanup:
     """Verify proper cleanup of child processes and file descriptors."""
@@ -184,8 +186,7 @@ class TestProcessCleanup:
         print(f"   New:    {new_zombies}")
 
         assert new_zombies == 0, (
-            f"Found {new_zombies} zombie processes after session termination. "
-            f"PIDs: {zombies_after}"
+            f"Found {new_zombies} zombie processes after session termination. PIDs: {zombies_after}"
         )
 
     @pytest.mark.asyncio
@@ -219,8 +220,7 @@ class TestProcessCleanup:
         print(f"   Leak:     {fd_leak}")
 
         assert fd_leak < 10, (
-            f"File descriptor leak detected: {fd_leak} FDs not cleaned up after "
-            f"20 session create/destroy cycles"
+            f"File descriptor leak detected: {fd_leak} FDs not cleaned up after 20 session create/destroy cycles"
         )
 
     @pytest.mark.asyncio
@@ -256,6 +256,4 @@ class TestProcessCleanup:
         print(f"   After termination:    {children_after}")
 
         residual = children_after - children_before
-        assert residual <= 1, (
-            f"Found {residual} lingering child processes after all sessions terminated"
-        )
+        assert residual <= 1, f"Found {residual} lingering child processes after all sessions terminated"

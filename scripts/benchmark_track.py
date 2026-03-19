@@ -57,7 +57,7 @@ def compare_metric(name: str, baseline_val: float, current_val: float, threshold
     passed = change <= threshold
     symbol = "✅" if passed else "❌"
     sign = "+" if change > 0 else ""
-    msg = f"  {symbol} {name}: {baseline_val:.4f} → {current_val:.4f} ({sign}{change*100:.1f}% {direction})"
+    msg = f"  {symbol} {name}: {baseline_val:.4f} → {current_val:.4f} ({sign}{change * 100:.1f}% {direction})"
 
     return msg, passed
 
@@ -135,10 +135,10 @@ def main() -> int:
 
     print()
     if all_passed:
-        print(f"✅ All benchmarks within {args.threshold*100:.0f}% regression threshold")
+        print(f"✅ All benchmarks within {args.threshold * 100:.0f}% regression threshold")
         return 0
     else:
-        print(f"❌ Some benchmarks regressed beyond {args.threshold*100:.0f}% threshold")
+        print(f"❌ Some benchmarks regressed beyond {args.threshold * 100:.0f}% threshold")
         return 1
 
 
