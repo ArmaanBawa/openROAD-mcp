@@ -58,7 +58,7 @@ async def _create_session():
 
 async def _execute_command(manager, session_id: str, command: str, timeout: int = 60):
     """Execute a command in a session and return the result."""
-    result = await manager.execute_command(session_id, command, timeout=timeout)
+    result = await manager.execute_command(session_id, command, timeout_ms=timeout * 1000)
     return result
 
 
@@ -103,7 +103,7 @@ class TestSessionLifecycle:
 
         # Session should no longer be active
         sessions = await manager.list_sessions()
-        active_ids = [s.get("session_id", s.get("id")) for s in sessions]
+        active_ids = [s.session_id for s in sessions]
         assert session_id not in active_ids
 
 
@@ -235,7 +235,7 @@ class TestErrorHandling:
         await _execute_command(manager, session_id, "this_is_not_a_valid_command_12345")
         # Session should still be alive after error
         sessions = await manager.list_sessions()
-        active_ids = [s.get("session_id", s.get("id")) for s in sessions]
+        active_ids = [s.session_id for s in sessions]
         assert session_id in active_ids
 
         await manager.terminate_session(session_id)

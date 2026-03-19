@@ -45,7 +45,7 @@ async def _create_and_run_session(manager, session_idx: int, commands: int = 3):
 
         # Run some commands
         for i in range(commands):
-            await manager.execute_command(session_id, f"puts session_{session_idx}_cmd_{i}", timeout=30)
+            await manager.execute_command(session_id, f"puts session_{session_idx}_cmd_{i}", timeout_ms=30 * 1000)
 
         return {
             "session_idx": session_idx,
@@ -184,7 +184,7 @@ class TestResourceExhaustion:
         # Create and destroy 10 sessions
         for i in range(10):
             sid = await manager.create_session()
-            await manager.execute_command(sid, f"puts fd_test_{i}", timeout=10)
+            await manager.execute_command(sid, f"puts fd_test_{i}", timeout_ms=10 * 1000)
             await manager.terminate_session(sid)
             await asyncio.sleep(0.2)
 

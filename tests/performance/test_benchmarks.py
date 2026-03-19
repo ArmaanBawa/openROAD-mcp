@@ -119,12 +119,12 @@ class TestCommandLatencyBenchmark:
         times: list[float] = []
 
         # Warm up
-        await manager.execute_command(session_id, "puts warmup", timeout=30)
+        await manager.execute_command(session_id, "puts warmup", timeout_ms=30 * 1000)
 
         # Benchmark
         for i in range(self.NUM_COMMANDS):
             start = time.perf_counter()
-            await manager.execute_command(session_id, f"puts iteration_{i}", timeout=30)
+            await manager.execute_command(session_id, f"puts iteration_{i}", timeout_ms=30 * 1000)
             elapsed = time.perf_counter() - start
             times.append(elapsed)
 
@@ -176,7 +176,7 @@ class TestThroughputBenchmark:
         start = time.perf_counter()
 
         while time.perf_counter() - start < self.DURATION_SECONDS:
-            await manager.execute_command(session_id, f"puts cmd_{command_count}", timeout=10)
+            await manager.execute_command(session_id, f"puts cmd_{command_count}", timeout_ms=10 * 1000)
             command_count += 1
 
         elapsed = time.perf_counter() - start

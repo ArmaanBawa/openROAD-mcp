@@ -77,7 +77,7 @@ class TestMemoryLeaks:
 
         for i in range(LEAK_TEST_ITERATIONS):
             sid = await manager.create_session()
-            await manager.execute_command(sid, f"puts leak_test_{i}", timeout=15)
+            await manager.execute_command(sid, f"puts leak_test_{i}", timeout_ms=15 * 1000)
             await manager.terminate_session(sid)
 
             # Periodic GC to simulate real-world conditions
@@ -129,7 +129,7 @@ class TestMemoryLeaks:
 
         num_commands = 200
         for i in range(num_commands):
-            await manager.execute_command(sid, f"puts long_session_cmd_{i}", timeout=10)
+            await manager.execute_command(sid, f"puts long_session_cmd_{i}", timeout_ms=10 * 1000)
 
         gc.collect()
         final_mb = _get_memory_mb()
@@ -169,7 +169,7 @@ class TestProcessCleanup:
         # Create and destroy 10 sessions
         for i in range(10):
             sid = await manager.create_session()
-            await manager.execute_command(sid, f"puts zombie_test_{i}", timeout=10)
+            await manager.execute_command(sid, f"puts zombie_test_{i}", timeout_ms=10 * 1000)
             await manager.terminate_session(sid)
             await asyncio.sleep(0.3)
 
@@ -204,7 +204,7 @@ class TestProcessCleanup:
         # Create 20 sessions, run commands, terminate
         for i in range(20):
             sid = await manager.create_session()
-            await manager.execute_command(sid, f"puts fd_cleanup_{i}", timeout=10)
+            await manager.execute_command(sid, f"puts fd_cleanup_{i}", timeout_ms=10 * 1000)
             await manager.terminate_session(sid)
 
         # Allow cleanup
