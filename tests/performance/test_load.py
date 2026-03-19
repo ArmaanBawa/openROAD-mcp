@@ -75,9 +75,9 @@ class TestConcurrentSessions:
     @pytest.mark.asyncio
     async def test_10_concurrent_sessions(self):
         """Validate 10 concurrent sessions can coexist."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         metrics_before = _get_system_metrics()
 
         tasks = [_create_and_run_session(manager, i) for i in range(10)]
@@ -102,9 +102,9 @@ class TestConcurrentSessions:
     @pytest.mark.asyncio
     async def test_25_concurrent_sessions(self):
         """Validate 25 concurrent sessions."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         metrics_before = _get_system_metrics()
 
         tasks = [_create_and_run_session(manager, i) for i in range(25)]
@@ -128,9 +128,9 @@ class TestConcurrentSessions:
     @pytest.mark.asyncio
     async def test_50_concurrent_sessions(self):
         """Validate 50+ concurrent sessions — the target for production readiness."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         metrics_before = _get_system_metrics()
 
         # Stagger session creation slightly to avoid thundering herd
@@ -174,9 +174,9 @@ class TestResourceExhaustion:
     @pytest.mark.asyncio
     async def test_file_descriptor_tracking(self):
         """Ensure file descriptors are properly cleaned up after sessions."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         process = psutil.Process()
 
         fds_before = process.num_fds() if hasattr(process, "num_fds") else 0

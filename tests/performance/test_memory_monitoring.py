@@ -8,7 +8,7 @@ import time
 import psutil
 import pytest
 
-from openroad_mcp.core.manager import OpenROADManager as SessionManager
+from openroad_mcp.core.manager import OpenROADManager as OpenROADManager
 from openroad_mcp.interactive.buffer import CircularBuffer
 
 
@@ -77,7 +77,7 @@ class TestMemoryLeakDetection:
 
     async def test_session_creation_memory_leak(self, memory_monitor):
         """Test for memory leaks in session creation/destruction."""
-        session_manager = SessionManager()
+        session_manager = OpenROADManager()
 
         try:
             memory_monitor.take_snapshot("start")
@@ -175,7 +175,7 @@ class TestMemoryLeakDetection:
 
     async def test_long_running_session_memory(self, memory_monitor):
         """Test memory usage in long-running sessions."""
-        session_manager = SessionManager()
+        session_manager = OpenROADManager()
 
         try:
             memory_monitor.take_snapshot("start")
@@ -229,7 +229,7 @@ class TestMemoryLeakDetection:
 
     async def test_concurrent_session_memory_usage(self, memory_monitor):
         """Test memory usage with concurrent sessions."""
-        session_manager = SessionManager()
+        session_manager = OpenROADManager()
 
         try:
             memory_monitor.take_snapshot("start")
@@ -390,7 +390,7 @@ class TestMemoryLeakDetection:
         if not hasattr(memory_monitor.process, "num_fds"):
             pytest.skip("File descriptor monitoring not available on this platform")
 
-        session_manager = SessionManager()
+        session_manager = OpenROADManager()
 
         try:
             memory_monitor.take_snapshot("start")
@@ -426,7 +426,7 @@ class TestStabilityMonitoring:
     async def test_stability_simulation(self):
         """Simulate 24-hour stability test (accelerated)."""
         memory_monitor = MemoryMonitor()
-        session_manager = SessionManager()
+        session_manager = OpenROADManager()
 
         try:
             memory_monitor.take_snapshot("start")

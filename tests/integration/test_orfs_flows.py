@@ -49,9 +49,9 @@ def _get_orfs_path() -> str:
 
 async def _create_session():
     """Create an MCP session and return the session manager + session ID."""
-    from openroad_mcp.session.manager import SessionManager
+    from openroad_mcp.core.manager import OpenROADManager
 
-    manager = SessionManager()
+    manager = OpenROADManager()
     session_id = await manager.create_session()
     return manager, session_id
 

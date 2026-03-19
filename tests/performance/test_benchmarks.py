@@ -61,9 +61,9 @@ class TestSessionCreationBenchmark:
     @pytest.mark.asyncio
     async def test_session_creation_latency(self):
         """Measure session creation time over multiple iterations."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         times: list[float] = []
         session_ids: list[str] = []
 
@@ -112,9 +112,9 @@ class TestCommandLatencyBenchmark:
     @pytest.mark.asyncio
     async def test_command_execution_latency(self):
         """Measure command execution time for simple Tcl commands."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         session_id = await manager.create_session()
         times: list[float] = []
 
@@ -167,9 +167,9 @@ class TestThroughputBenchmark:
     @pytest.mark.asyncio
     async def test_sustained_throughput(self):
         """Measure how many commands can be executed per second over a window."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         session_id = await manager.create_session()
 
         command_count = 0

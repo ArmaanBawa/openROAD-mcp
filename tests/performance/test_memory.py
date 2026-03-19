@@ -64,9 +64,9 @@ class TestMemoryLeaks:
         After creating and destroying LEAK_TEST_ITERATIONS sessions, memory
         should return close to the baseline (within tolerance).
         """
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
 
         # Force garbage collection and establish baseline
         gc.collect()
@@ -119,9 +119,9 @@ class TestMemoryLeaks:
     @pytest.mark.asyncio
     async def test_long_running_session_memory(self):
         """Run many commands in a single session and check memory stays bounded."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         sid = await manager.create_session()
 
         gc.collect()
@@ -160,9 +160,9 @@ class TestProcessCleanup:
     @pytest.mark.asyncio
     async def test_no_zombie_processes_after_termination(self):
         """Ensure no zombie processes remain after session termination."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
 
         zombies_before = _get_zombie_processes()
 
@@ -192,9 +192,9 @@ class TestProcessCleanup:
     @pytest.mark.asyncio
     async def test_file_descriptor_cleanup(self):
         """Verify file descriptors are properly released after session cleanup."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         process = psutil.Process()
 
         # Baseline
@@ -226,9 +226,9 @@ class TestProcessCleanup:
     @pytest.mark.asyncio
     async def test_child_process_cleanup(self):
         """Verify no lingering child processes after session termination."""
-        from openroad_mcp.session.manager import SessionManager
+        from openroad_mcp.core.manager import OpenROADManager
 
-        manager = SessionManager()
+        manager = OpenROADManager()
         process = psutil.Process()
 
         children_before = len(process.children(recursive=True))

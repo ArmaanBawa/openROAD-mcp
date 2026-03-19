@@ -1,11 +1,11 @@
-"""Tests for SessionManager implementation."""
+"""Tests for OpenROADManager implementation."""
 
 import asyncio
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from openroad_mcp.core.manager import OpenROADManager as SessionManager
+from openroad_mcp.core.manager import OpenROADManager as OpenROADManager
 from openroad_mcp.core.models import SessionState
 from openroad_mcp.interactive.models import SessionNotFoundError, SessionTerminatedError
 
@@ -13,13 +13,13 @@ skip_hanging_tests = pytest.mark.skip(reason="Temporarily disabled - hanging due
 
 
 @pytest.mark.asyncio
-class TestSessionManager:
-    """Test suite for SessionManager."""
+class TestOpenROADManager:
+    """Test suite for OpenROADManager."""
 
     @pytest.fixture
     def session_manager(self):
         """Create a test session manager."""
-        return SessionManager()
+        return OpenROADManager()
 
     async def test_session_manager_initialization(self, session_manager):
         """Test session manager initialization."""
@@ -387,8 +387,8 @@ class TestSessionManager:
 
 
 @pytest.mark.asyncio
-class TestSessionManagerAsync:
-    """Async test runner for SessionManager."""
+class TestOpenROADManagerAsync:
+    """Async test runner for OpenROADManager."""
 
     @skip_hanging_tests
     @patch("openroad_mcp.interactive.session.PTYHandler")
@@ -398,7 +398,7 @@ class TestSessionManagerAsync:
         mock_pty.is_process_alive.return_value = True
         mock_pty_class.return_value = mock_pty
 
-        manager = SessionManager()
+        manager = OpenROADManager()
 
         try:
             # Create session
@@ -430,7 +430,7 @@ class TestSessionManagerAsync:
         mock_pty_class.return_value = mock_pty
 
         num_sessions = 50
-        manager = SessionManager(max_sessions=num_sessions)
+        manager = OpenROADManager(max_sessions=num_sessions)
 
         try:
             # Create many sessions rapidly
