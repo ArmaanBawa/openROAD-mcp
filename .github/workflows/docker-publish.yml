@@ -126,8 +126,8 @@ jobs:
       - name: Pull and test image
         run: |
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7}
-          # Verify the MCP module is importable
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7} \
+          # Verify the MCP module is importable (override entrypoint)
+          docker run --rm --entrypoint "" ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7} \
             python -c "from openroad_mcp import main; print('✅ MCP server module loaded')"
 
       - name: Test OpenROAD is available
