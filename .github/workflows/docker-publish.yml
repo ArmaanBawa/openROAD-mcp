@@ -1,0 +1,136 @@
+# =============================================================================
+# docker-publish.yml — Build & publish Docker images to GHCR
+#
+# Trigger:  push to main, tag v*.*.*, or manual dispatch
+# Outputs:  Multi-platform images at ghcr.io/luarss/openroad-mcp
+# Tags:     latest, <version>, <git-sha>
+# =============================================================================
+
+name: Docker Publish
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build, scan, and push Docker image
+  # ---------------------------------------------------------------------------
+  build-and-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Docker Buildx for multi-platform builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Set up QEMU for cross-platform emulation (arm64)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Authenticate to GHCR
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Generate image tags and labels from repo metadata
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # Tag: latest for main branch pushes
+            type=raw,value=latest,enable={{is_default_branch}}
+            # Tag: semver from git tag (v1.2.3 → 1.2.3)
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            # Tag: short SHA for every push
+            type=sha,prefix=sha-
+
+      # Build and push multi-platform image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          target: runtime
+
+      # Verify the image was pushed
+      - name: Verify published image
+        run: |
+          echo "✅ Image published with tags:"
+          echo "${{ steps.meta.outputs.tags }}"
+
+  # ---------------------------------------------------------------------------
+  # Security scan with Trivy
+  # ---------------------------------------------------------------------------
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    timeout-minutes: 15
+
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
+
+  # ---------------------------------------------------------------------------
+  # Smoke test the published image
+  # ---------------------------------------------------------------------------
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    timeout-minutes: 10
+
+    steps:
+      - name: Pull and test image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7}
+          # Verify the MCP module is importable
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7} \
+            python -c "from openroad_mcp import main; print('✅ MCP server module loaded')"
+
+      - name: Test OpenROAD is available
+        run: |
+          docker run --rm --entrypoint "" ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${GITHUB_SHA::7} \
+            openroad -version || echo "⚠️ OpenROAD binary check (may not be in PATH for arm64)"

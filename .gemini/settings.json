@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "openroad-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "openroad-mcp"
+      ]
+    }
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  }
+}

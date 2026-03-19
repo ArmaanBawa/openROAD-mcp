@@ -1,0 +1,74 @@
+# =============================================================================
+# .dockerignore — Exclude unnecessary files from Docker build context
+# =============================================================================
+
+# Version control
+.git
+.gitignore
+.github
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Dev tool caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.envrc
+
+# Documentation (not needed in image)
+docs/
+*.md
+!README.md
+
+# Development configs
+.pre-commit-config.yaml
+
+# Project specific
+claude/
+.claude
+.gemini
+mcp.json
+demo/
+
+# Docker files themselves
+Dockerfile*
+docker-compose*.yml
+.dockerignore

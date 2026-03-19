@@ -1,0 +1,116 @@
+###############################################################################
+#  docker-compose.yml — OpenROAD-MCP local development and production         #
+#                                                                             #
+#  Usage:                                                                     #
+#    Production:   docker compose up openroad-mcp                             #
+#    Development:  docker compose up openroad-mcp-dev                         #
+#    Tests:        docker compose run --rm test                               #
+###############################################################################
+
+services:
+  # ---------------------------------------------------------------------------
+  # Production service — uses the multi-stage production Dockerfile
+  # ---------------------------------------------------------------------------
+  openroad-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: ghcr.io/armaanbawa/openroad-mcp:latest
+    container_name: openroad-mcp
+    ports:
+      - "8080:8080"
+    volumes:
+      - workspace:/workspace
+    environment:
+      - MCP_SERVER_REQUEST_TIMEOUT=120
+      - MCP_REQUEST_MAX_TOTAL_TIMEOUT=300
+    healthcheck:
+      test: ["CMD", "python", "-c", "from openroad_mcp import main; print('ok')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # Development service — hot-reload with mounted source
+  # ---------------------------------------------------------------------------
+  openroad-mcp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: openroad-mcp-dev
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - MCP_SERVER_REQUEST_TIMEOUT=99999999999
+      - MCP_REQUEST_MAX_TOTAL_TIMEOUT=99999999999
+    ports:
+      - "8081:8080"
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # ---------------------------------------------------------------------------
+  # Test runner — one-shot container for CI or local test runs
+  # ---------------------------------------------------------------------------
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - PYTHONPATH=/app/src
+      - MCP_SERVER_REQUEST_TIMEOUT=120
+      - MCP_REQUEST_MAX_TOTAL_TIMEOUT=300
+    command: >
+      sh -c "
+        uv run pytest --ignore=tests/interactive --ignore=tests/performance --ignore=tests/integration
+        && echo '✅ All core tests passed'
+      "
+    profiles:
+      - test
+
+  # ---------------------------------------------------------------------------
+  # Integration tests — requires OpenROAD/ORFS (runs in Docker image)
+  # ---------------------------------------------------------------------------
+  test-integration:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - PYTHONPATH=/app/src
+      - MCP_SERVER_REQUEST_TIMEOUT=300
+      - MCP_REQUEST_MAX_TOTAL_TIMEOUT=600
+    command: uv run pytest tests/integration -v
+    profiles:
+      - test
+
+  # ---------------------------------------------------------------------------
+  # Performance tests — benchmarks, load testing, memory profiling
+  # ---------------------------------------------------------------------------
+  test-performance:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - PYTHONPATH=/app/src
+      - MEMORY_PROFILE=1
+    command: uv run pytest tests/performance/ -v
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+    profiles:
+      - test
+
+volumes:
+  workspace:
