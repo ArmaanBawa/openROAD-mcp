@@ -21,7 +21,7 @@ WORKDIR /build
 
 # Copy dependency manifests first for optimal layer caching.
 # Changes to source code won't invalidate the dependency layer.
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 COPY requirements.txt requirements-test.txt ./
 
 # Install production dependencies only (no dev extras)
