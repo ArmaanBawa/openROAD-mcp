@@ -38,5 +38,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - QUICKSTART guide, ARCHITECTURE, and CONTRIBUTING documentation
 - ROADMAP for planned features
 
-[0.2.0]: https://github.com/luarss/openroad-mcp/releases/tag/v0.2.0
-[0.1.0]: https://github.com/luarss/openroad-mcp/releases/tag/v0.1.0
+[0.2.0]: https://github.com/ArmaanBawa/openROAD-mcp/releases/tag/v0.2.0
+[0.1.0]: https://github.com/ArmaanBawa/openROAD-mcp/releases/tag/v0.1.0

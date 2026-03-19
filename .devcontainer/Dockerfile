@@ -98,7 +98,7 @@ RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Clone and install openroad-mcp
 WORKDIR /workspace
-RUN git clone https://github.com/luarss/openroad-mcp.git
+RUN git clone https://github.com/ArmaanBawa/openROAD-mcp.git
 WORKDIR /workspace/openroad-mcp
 RUN uv venv
 RUN uv pip install -e .

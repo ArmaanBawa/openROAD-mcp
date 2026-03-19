@@ -42,7 +42,7 @@ The basic configuration for all MCP clients:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/luarss/openroad-mcp",
+        "git+https://github.com/ArmaanBawa/openROAD-mcp",
         "openroad-mcp"
       ]
     }
