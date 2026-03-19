@@ -12,7 +12,7 @@ We are currently in the **pre-release phase**, focusing on gathering community f
 - Session management (create, list, inspect, terminate)
 - Command history and metrics tracking
 - Report image visualization from ORFS runs
-- Integration with Claude Code and Gemini CLI
+- Integration with AI Assistants and Gemini CLI
 
 ### Pre-Release Goals
 
@@ -46,7 +46,7 @@ The pre-release phase focuses on:
 
 ### Developer Experience
 - [x] Quick Start guide
-- [x] Claude Code integration
+- [x] AI Assistant integration
 - [x] Gemini CLI integration
 - [ ] VS Code extension integration testing
 - [ ] Zed integration testing

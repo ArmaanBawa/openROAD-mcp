@@ -133,7 +133,7 @@ make test-integration
 
 | Client | Status | Notes |
 |--------|--------|-------|
-| Claude Code / Claude Desktop | ✅ Supported | Primary target |
+| Local AI Assistant (e.g., Cursor) | ✅ Supported | Primary target |
 | Gemini CLI | ✅ Supported | Follow Gemini MCP install guide |
 | VS Code (MCP extension) | ✅ Supported | Configure in `.vscode/settings.json` |
 | Zed | ✅ Supported | Configure in Zed settings |

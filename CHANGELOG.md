@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Report image tool for retrieving ORFS stage output images (#23)
 - CLI entry point (`openroad-mcp`) with `--help` and version flags
 - Gemini CLI integration and documentation
-- Claude Code devcontainer support (#34)
+- AI Assistant devcontainer support (#34)
 - GCD timing optimization example flow targeting WNS (#35)
 - Path traversal and security protection for file access
 - ANSI/Unicode output decoding for clean command results

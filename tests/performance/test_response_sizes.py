@@ -29,7 +29,7 @@ from openroad_mcp.tools.interactive import ListSessionsTool
 # ---------------------------------------------------------------------------
 # Token budget constants — justified below
 # ---------------------------------------------------------------------------
-# A coding agent (Claude, Cursor) typically has a 200k token context window.
+# A coding agent typically has a 200k token context window.
 # MCP tool responses should consume <0.1% of context per call so that
 # long agentic workflows (100+ tool calls) don't exhaust the budget.
 # 200,000 * 0.001 = 200 tokens max per response.
