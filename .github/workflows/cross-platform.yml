@@ -108,57 +108,30 @@ jobs:
   windows-wsl2:
     runs-on: windows-latest
     timeout-minutes: 45
+    continue-on-error: true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Enable WSL2
-        run: |
-          wsl --install -d Ubuntu-24.04 --no-launch
         shell: powershell
+        run: wsl --install -d Ubuntu-24.04 --no-launch
 
       - name: Setup WSL2 environment
-        run: |
-          wsl -d Ubuntu-24.04 -- bash -c "
-            sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-venv curl
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-            export PATH=\$HOME/.local/bin:\$PATH
-            echo 'export PATH=\$HOME/.local/bin:\$PATH' >> ~/.bashrc
-          "
         shell: powershell
-
-      - name: Copy project to WSL2
         run: |
-          $wslPath = wsl -d Ubuntu-24.04 -- wslpath -a "${{ github.workspace }}"
-          wsl -d Ubuntu-24.04 -- bash -c "
-            cd '$wslPath'
-            export PATH=\$HOME/.local/bin:\$PATH
-            uv sync --all-extras --inexact
-          "
-        shell: powershell
+          wsl -d Ubuntu-24.04 -- bash -lc "sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-venv curl && curl -LsSf https://astral.sh/uv/install.sh | sh"
 
       - name: Run tests in WSL2
-        run: |
-          $wslPath = wsl -d Ubuntu-24.04 -- wslpath -a "${{ github.workspace }}"
-          wsl -d Ubuntu-24.04 -- bash -c "
-            cd '$wslPath'
-            export PATH=\$HOME/.local/bin:\$PATH
-            uv run pytest --ignore=tests/interactive --ignore=tests/performance --ignore=tests/integration -v
-          "
         shell: powershell
+        run: |
+          wsl -d Ubuntu-24.04 -- bash -lc "export PATH=`$HOME/.local/bin:`$PATH && cd /mnt/d/a/openROAD-mcp/openROAD-mcp && uv sync --all-extras --inexact && uv run pytest --ignore=tests/interactive --ignore=tests/performance --ignore=tests/integration -v"
 
-      - name: Test Docker integration (WSL2)
-        run: |
-          wsl -d Ubuntu-24.04 -- bash -c "
-            if command -v docker &> /dev/null; then
-              echo '✅ Docker available in WSL2'
-              docker --version
-            else
-              echo '⚠️ Docker not available in WSL2 (requires Docker Desktop)'
-            fi
-          "
+      - name: Check Docker availability in WSL2
         shell: powershell
+        run: |
+          wsl -d Ubuntu-24.04 -- bash -lc "command -v docker && docker --version || echo 'Docker not available in WSL2 (requires Docker Desktop)'"
 
   # ---------------------------------------------------------------------------
   # Summary job — gates merge

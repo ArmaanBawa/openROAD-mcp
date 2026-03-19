@@ -97,14 +97,14 @@ class TestMemoryLeaks:
         final_mb = _get_memory_mb()
         growth_mb = final_mb - baseline_mb
 
-        print(f"\n📊 Memory leak test results:")
+        print("\n📊 Memory leak test results:")
         print(f"   Baseline:    {baseline_mb:.1f}MB")
         print(f"   Final:       {final_mb:.1f}MB")
         print(f"   Growth:      {growth_mb:+.1f}MB")
         print(f"   Iterations:  {LEAK_TEST_ITERATIONS}")
 
         # Print top memory allocations
-        print(f"\n   Top 5 memory allocations:")
+        print("\n   Top 5 memory allocations:")
         for stat in snapshot.statistics("lineno")[:5]:
             print(f"     {stat}")
 
@@ -137,7 +137,7 @@ class TestMemoryLeaks:
 
         await manager.terminate_session(sid)
 
-        print(f"\n📊 Long session memory test:")
+        print("\n📊 Long session memory test:")
         print(f"   Commands:  {num_commands}")
         print(f"   Baseline:  {baseline_mb:.1f}MB")
         print(f"   Final:     {final_mb:.1f}MB")
@@ -179,7 +179,7 @@ class TestProcessCleanup:
         zombies_after = _get_zombie_processes()
 
         new_zombies = len(zombies_after) - len(zombies_before)
-        print(f"\n📊 Zombie process check:")
+        print("\n📊 Zombie process check:")
         print(f"   Before: {len(zombies_before)}")
         print(f"   After:  {len(zombies_after)}")
         print(f"   New:    {new_zombies}")
@@ -214,7 +214,7 @@ class TestProcessCleanup:
         fds_final = process.num_fds() if hasattr(process, "num_fds") else 0
         fd_leak = fds_final - fds_baseline
 
-        print(f"\n📊 FD cleanup verification:")
+        print("\n📊 FD cleanup verification:")
         print(f"   Baseline: {fds_baseline}")
         print(f"   Final:    {fds_final}")
         print(f"   Leak:     {fd_leak}")
@@ -236,7 +236,7 @@ class TestProcessCleanup:
 
         # Create 5 sessions
         sids = []
-        for i in range(5):
+        for _ in range(5):
             sid = await manager.create_session()
             sids.append(sid)
 
@@ -251,7 +251,7 @@ class TestProcessCleanup:
 
         children_after = len(process.children(recursive=True))
 
-        print(f"\n📊 Child process cleanup:")
+        print("\n📊 Child process cleanup:")
         print(f"   Before creation:      {children_before}")
         print(f"   During (5 sessions):  {children_during}")
         print(f"   After termination:    {children_after}")
