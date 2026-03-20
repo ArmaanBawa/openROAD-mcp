@@ -35,9 +35,17 @@ class OpenROADManager:
             self._max_sessions = settings.MAX_SESSIONS
             self._default_timeout_ms = int(settings.COMMAND_TIMEOUT * 1000)
             self._default_buffer_size = settings.DEFAULT_BUFFER_SIZE
-            self._cleanup_lock = asyncio.Lock()
+            self._locks: dict[asyncio.AbstractEventLoop, asyncio.Lock] = {}
 
             self.logger.info(f"Initialized OpenROADManager with max_sessions={self._max_sessions}")
+
+    @property
+    def _cleanup_lock(self) -> asyncio.Lock:
+        """Get or create an asyncio.Lock tied to the current running event loop."""
+        loop = asyncio.get_running_loop()
+        if loop not in self._locks:
+            self._locks[loop] = asyncio.Lock()
+        return self._locks[loop]
 
     async def create_session(
         self,
